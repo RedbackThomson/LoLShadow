@@ -21,7 +21,6 @@ class FollowerFetcher:
 		errorTime = 0
 		self.followed = []
 		while(self.alive):
-			time.sleep(5)
 			current_subs = self._getLatestFollower()
 			
 			if(current_subs is None):
@@ -38,6 +37,8 @@ class FollowerFetcher:
 					if(current_id not in self.followed):
 						self.followed.append(current_id)
 						self.newfollow_callback(current_sub['user']['display_name'])
+
+			time.sleep(5)
 
 	def _getLatestFollower(self):
 		url = Constants.FOLLOWER_URI.format(self.twitch_username, 1)

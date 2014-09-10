@@ -7,6 +7,7 @@ import time
 
 from ShadowLogger import ShadowLogger
 from LoLDB import LoLDB
+from LoLRedis import LoLRedis
 from Shadow import Shadow
 from DatabaseModels.ShadowModel import ShadowModel
 
@@ -14,19 +15,27 @@ class LoLShadow:
 	def __init__(self):
 		ShadowLogger.InitLogger()
 		self.loldb = LoLDB()
-		self.LoadDatabaseSettings()
+		self.lolredis = LoLRedis()
+		self.LoadConfSettings()
 		self.loldb.Connect()
+		self.lolredis.Connect()
 		ShadowLogger.Info('Connected to DB')
 
-	def LoadDatabaseSettings(self):
+	def LoadConfSettings(self):
 		settingsFile = open('conf/settings.json', 'r')
 		settings = json.loads(settingsFile.read())
-		dbSettings = settings['database']
 
+		dbSettings = settings['database']
 		self.loldb.login_host = dbSettings['host']
 		self.loldb.login_user = dbSettings['user']
 		self.loldb.login_pass = dbSettings['pass']
 		self.loldb.login_db = dbSettings['db']
+
+		redisSettings = settings['redis']
+		self.lolredis.host = redisSettings['host']
+		self.lolredis.password = redisSettings['password']
+		self.lolredis.port = redisSettings['port']
+		self.lolredis.db = redisSettings['db']
 
 	def Start(self):
 		#Get all shadows
@@ -37,6 +46,7 @@ class LoLShadow:
 		for shadow in shadows:
 			newShadow = Shadow()
 			newShadow.loldb = self.loldb
+			newShadow.lolredis = self.lolredis
 			newShadow.model = ShadowModel(shadow)
 			self.shadows.append(newShadow)
 

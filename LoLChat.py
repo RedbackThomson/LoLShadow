@@ -31,8 +31,13 @@ class LoLChat(ClientXMPP):
 	def Start(self):
 		address = (Constants.CHAT_ADDRESS, Constants.CHAT_ADDRESS_PORT)
 		ShadowLogger.ShadowInfo('Connecting to server...', self.shadow.model.SummonerName)
+		self.alive = True
 		self.connect(address, True, False, True)
 		self.process(block=False)
+
+	def Stop(self):
+		self.alive = False
+		self.disconnect(wait=False)
 
 	def SendMessage(self, target, message):
 		self.send_message(mto='sum'+target+'@'+Constants.CHAT_SERVER+'/xiff', mbody=message, mtype='chat')
@@ -81,7 +86,8 @@ class LoLChat(ClientXMPP):
 		ShadowLogger.ShadowInfo('Deleted Friend: %s' % (str(presence['from'])), self.shadow.model.SummonerName)
 
 	def _disconnected(self):
-		self.shadow.Restart()
+		if self.alive:
+			self.shadow.Restart()
 
 	def _getSummonerId(self, fromID):
 		return fromID.split('@',1)[0].replace('sum','')
