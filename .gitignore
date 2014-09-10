@@ -1,0 +1,9 @@
+*.pyc
+
+Backup/
+LoLAlerter.log
+logs/*
+tmp_tracker.pid
+conf/*
+sleekxmpp/*
+tmp_shadow.pid
