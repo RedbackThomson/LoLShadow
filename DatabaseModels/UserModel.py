@@ -3,6 +3,7 @@ class UserModel:
 		self.ID = dbRow["ID"]
 		self.APIKey = dbRow["APIKey"]
 		self.TwitchUsername = dbRow["TwitchUsername"]
+		self.TwitchDisplay = dbRow["TwitchDisplay"]
 		self.TwitchToken = dbRow["TwitchToken"]
 		self.RefreshToken = dbRow["RefreshToken"]
 		self.Timestamp = dbRow["Timestamp"]

@@ -2,12 +2,11 @@ from FollowerFetcher import FollowerFetcher
 from ShadowLogger import ShadowLogger
 
 class ShadowUser:
-	def __init__(self, newfollow_callback, user, summoner_id):
+	def __init__(self, newfollow_callback, user, summoner_id, redis):
 		self.user = user
 		self.summoner_id = summoner_id
 		self.newfollow_callback = newfollow_callback
-		self.followFetcher = FollowerFetcher(self.SendMessage, 
-			user.TwitchUsername, user.TwitchToken)
+		self.followFetcher = FollowerFetcher(self.SendMessage, user, redis)
 
 	def Start(self):
 		#Create a connection to the base

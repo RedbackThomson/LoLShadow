@@ -46,7 +46,7 @@ class Shadow:
 			self.current_alerts[username].Stop()
 			del self.current_alerts[username]
 
-		self.current_alerts[username] = ShadowUser(self.SendNewFollow, user, summoner_id)#username, summoner_id, user.TwitchToken)
+		self.current_alerts[username] = ShadowUser(self.SendNewFollow, user, summoner_id, self.lolredis)
 		self.current_alerts[username].Start()
 		self.loldb.SetOnlineUsers(len(self.current_alerts), self.model.ID)
 		#except Exception, e:
@@ -65,13 +65,18 @@ class Shadow:
 
 		self.loldb.SetOnlineUsers(len(self.current_alerts), self.model.ID)
 
+	def StopUser(self, summoner_id):
+		for username, alert in self.current_alerts.iteritems():
+			if(alert.summoner_id == summoner_id):
+				self.current_alerts[username].Stop()
+				del self.current_alerts[username]	
+
 	def SendMessage(self, target, message):
 		self.lolchat.SendMessage(target, message)
 
 	def SendNewFollow(self, user, target, new_follow):
 		#Send new follow message
 		self.loldb.IncrementTotalFollowed(self.model.ID)
-		self.lolredis.NewFollow(user, new_follow)
 		message = '{} has just followed!'.format(new_follow)
 		self.SendMessage(target, message)
 

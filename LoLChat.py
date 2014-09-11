@@ -83,6 +83,7 @@ class LoLChat(ClientXMPP):
 	def _presence_unsubscribe(self, presence):
 		requestor = self._getSummonerId(str(presence['from']))
 		self.loldb.RemoveShadowFriend(requestor, self.shadow.model.ID)
+		self.shadow.StopUser(requestor)
 		ShadowLogger.ShadowInfo('Deleted Friend: %s' % (str(presence['from'])), self.shadow.model.SummonerName)
 
 	def _disconnected(self):
