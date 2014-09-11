@@ -31,7 +31,7 @@ class FollowerFetcher:
 			for current_sub in current_subs:
 				errorTime = 0
 				if(self.first):
-					self.lolredis.NewFollow(self.user, current_sub['user']['name'])
+					self.lolredis.DumpFollow(self.user, current_sub['user']['name'])
 					self.first = False
 				else:
 					if(not self.lolredis.HasFollower(self.user, current_sub['user']['name'])):

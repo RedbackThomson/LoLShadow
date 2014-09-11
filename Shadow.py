@@ -54,7 +54,7 @@ class Shadow:
 
 	def UserOff(self, summoner_id):
 		if(summoner_id == self.model.SummonerID): return
-		user = self.loldb.GetUserBySummonerId(summoner_id)
+		user = self.loldb.GetUserBySummonerId(summoner_id, self.model.ID)
 		if(user == None): return
 		username = user.TwitchUsername
 
@@ -77,6 +77,7 @@ class Shadow:
 	def SendNewFollow(self, user, target, new_follow):
 		#Send new follow message
 		self.loldb.IncrementTotalFollowed(self.model.ID)
+		ShadowLogger.ShadowInfo('Sending %s to %s' % (new_follow, user.TwitchUsername), self.model.SummonerName)
 		message = '{} has just followed!'.format(new_follow)
 		self.SendMessage(target, message)
 

@@ -16,5 +16,4 @@ class ShadowUser:
 		self.followFetcher.alive = False
 
 	def SendMessage(self, newfollow_username):
-		ShadowLogger.Info('Sending %s to %s' % (newfollow_username, self.user.TwitchUsername))
 		self.newfollow_callback(self.user, self.summoner_id, newfollow_username)
