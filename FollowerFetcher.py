@@ -41,7 +41,7 @@ class FollowerFetcher:
 			time.sleep(5)
 
 	def _getLatestFollower(self):
-		url = Constants.FOLLOWER_URI.format(self.user.TwitchUsername, 1)
+		url = Constants.FOLLOWER_URI % (self.user.TwitchUsername, 1, time.time())
 		try:
 			response = urllib2.urlopen(url)
 			return self._parseLatestFollower(response.read())

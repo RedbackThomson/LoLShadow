@@ -62,6 +62,7 @@ class LoLShadow:
 
 	def EnabledPoll(self):
 		while self.enabledThread:
+			#Rewrite to pull all shadows, then look through the list
 			for shadow in self.shadows:
 				enabled = self.loldb.GetShadowEnabled(shadow.model.ID)
 				if enabled and not shadow.alive:

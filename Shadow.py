@@ -1,6 +1,7 @@
 from LoLChat import LoLChat
 from ShadowUser import ShadowUser
 from ShadowLogger import ShadowLogger
+import traceback
 
 class Shadow:
 	def __init__(self):
@@ -26,31 +27,33 @@ class Shadow:
 		self.alive = False
 
 	def UserOn(self, summoner_id):
-		#try:
-		if(summoner_id == str(self.model.SummonerID)): return
-		user = self.loldb.GetUserBySummonerId(summoner_id, self.model.ID)
-		if(user == None): 
-			#Freeloader
-			self.SendMessage(summoner_id, "This summoner has not been configured.")
-			self.lolchat.UnFriend(summoner_id)
-			return
-		if(user.Active == 0):
-			return
+		try:
+			if(summoner_id == str(self.model.SummonerID)): return
+			user = self.loldb.GetUserBySummonerId(summoner_id, self.model.ID)
+			if(user == None): 
+				#Freeloader
+				self.SendMessage(summoner_id, "This summoner has not been configured.")
+				self.lolchat.UnFriend(summoner_id)
+				return
+			if(user.Active == 0):
+				return
 
-		username = user.TwitchUsername
-		self.CheckUserNotices(user, summoner_id)
+			username = user.TwitchUsername
+			self.CheckUserNotices(user, summoner_id)
 
-		ShadowLogger.ShadowInfo('User Online: %s @ %s' % (str(username),str(summoner_id)), self.model.SummonerName)
-		if(username in self.current_alerts): 
-			#Chat might have reset - no need to restart the whole thread service
-			self.current_alerts[username].Stop()
-			del self.current_alerts[username]
+			ShadowLogger.ShadowInfo('User Online: %s @ %s' % (str(username),str(summoner_id)), self.model.SummonerName)
+			if(username in self.current_alerts): 
+				#Chat might have reset - no need to restart the whole thread service
+				self.current_alerts[username].Stop()
+				del self.current_alerts[username]
 
-		self.current_alerts[username] = ShadowUser(self.SendNewFollow, user, summoner_id, self.lolredis)
-		self.current_alerts[username].Start()
-		self.loldb.SetOnlineUsers(len(self.current_alerts), self.model.ID)
-		#except Exception, e:
-			#ShadowLogger.ShadowError(str(e), self.model.SummonerName)
+			self.current_alerts[username] = ShadowUser(self.SendNewFollow, user, summoner_id, self.lolredis)
+			self.current_alerts[username].Start()
+			
+			self.loldb.SetOnlineUsers(len(self.current_alerts), self.model.ID)
+		except Exception, e:
+			traceback.print_stack()
+			ShadowLogger.ShadowError(str(e), self.model.SummonerName)
 
 	def UserOff(self, summoner_id):
 		if(summoner_id == self.model.SummonerID): return
@@ -76,6 +79,7 @@ class Shadow:
 
 	def SendNewFollow(self, user, target, new_follow):
 		#Send new follow message
+		self.loldb.IncrementUserFollowed(user.ID)
 		self.loldb.IncrementTotalFollowed(self.model.ID)
 		ShadowLogger.ShadowInfo('Sending %s to %s' % (new_follow, user.TwitchUsername), self.model.SummonerName)
 		message = '{} has just followed!'.format(new_follow)

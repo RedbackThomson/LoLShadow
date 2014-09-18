@@ -29,7 +29,7 @@ class LoLChat(ClientXMPP):
 		self.add_event_handler("disconnected", self._disconnected)
 
 	def Start(self):
-		address = (Constants.CHAT_ADDRESS, Constants.CHAT_ADDRESS_PORT)
+		address = (self._getChatAddress(), Constants.CHAT_ADDRESS_PORT)
 		ShadowLogger.ShadowInfo('Connecting to server...', self.shadow.model.SummonerName)
 		self.alive = True
 		self.connect(address, True, False, True)
@@ -89,6 +89,10 @@ class LoLChat(ClientXMPP):
 	def _disconnected(self):
 		if self.alive:
 			self.shadow.Restart()
+
+	def _getChatAddress(self):
+		chatCode = (self.loldb.GetShadowRegion(self.shadow.model.ID).RegionChat)
+		return (Constants.CHAT_ADDRESS % chatCode)
 
 	def _getSummonerId(self, fromID):
 		return fromID.split('@',1)[0].replace('sum','')

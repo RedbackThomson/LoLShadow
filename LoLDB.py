@@ -3,6 +3,7 @@ import MySQLdb.cursors
 from DatabaseModels.ShadowModel import ShadowModel
 from DatabaseModels.NoticeModel import NoticeModel
 from DatabaseModels.UserModel import UserModel
+from DatabaseModels.RegionModel import RegionModel
 
 class LoLDB:
 	def Connect(self):
@@ -13,6 +14,7 @@ class LoLDB:
 		self.conn.close()
 
 	def getCursor(self):
+		self.conn.ping(True)
 		return self.conn.cursor(MySQLdb.cursors.DictCursor)
 
 	def GetAllShadows(self):
@@ -60,12 +62,15 @@ class LoLDB:
 
 	def SetOnlineUsers(self, onlineUsers, shadow):
 		cursor = self.getCursor()
-		cursor.execute("INSERT INTO `statistics`(`OnlineUsers`,`Shadow`) VALUES(%s,%s) ON DUPLICATE KEY UPDATE;" % (str(onlineUsers), shadow))
+		cursor.execute("INSERT INTO `statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,%s) ON DUPLICATE KEY UPDATE `OnlineUsers`=%s;" % (shadow, str(onlineUsers), str(onlineUsers)))
+
+	def IncrementUserFollowed(self, user):
+		cursor = self.getCursor()
+		cursor.execute("INSERT INTO `user_statistics`(`User`,`TotalSubscribed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalSubscribed`=`TotalSubscribed` + 1;" % (user))
 
 	def IncrementTotalFollowed(self, shadow):
 		cursor = self.getCursor()
-		cursor.execute("INSERT IGNORE INTO `statistics`(`Shadow`,`OnlineUsers`, `TotalFollowed`) VALUES(%s,%s,%s);" % (shadow,0,0))
-		cursor.execute("UPDATE `statistics` SET `TotalFollowed` = `TotalFollowed` + 1 WHERE `Shadow`=%s;", (shadow))
+		cursor.execute("INSERT INTO `statistics`(`Shadow`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed` = `TotalFollowed` + 1", (shadow))
 
 	def UpdateNotice(self, user_id, notice):
 		cursor = self.getCursor()
@@ -73,9 +78,14 @@ class LoLDB:
 
 	def ResetOnlineUsers(self, shadow):
 		cursor = self.conn.cursor()
-		cursor.execute("UPDATE `statistics` SET `OnlineUsers` = 0 WHERE `Shadow`=%s;", (shadow))
+		cursor.execute("INSERT INTO `statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,0) ON DUPLICATE KEY UPDATE `OnlineUsers`=0;" % (shadow))
 
 	def GetLatestNotice(self):
 		cursor = self.getCursor()
 		cursor.execute("SELECT * FROM `notices` ORDER BY `Timestamp` DESC LIMIT 1;")
 		return NoticeModel(cursor.fetchone())
+
+	def GetShadowRegion(self, shadow):
+		cursor = self.getCursor()
+		cursor.execute("SELECT * FROM `regions` WHERE `ID`=(SELECT `Region` FROM `shadows` WHERE `ID`=%s);", (shadow))
+		return RegionModel(cursor.fetchone())

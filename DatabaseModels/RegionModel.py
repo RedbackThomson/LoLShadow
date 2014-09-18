@@ -3,4 +3,4 @@ class RegionModel:
 		self.ID = dbRow["ID"]
 		self.RegionName = dbRow["RegionName"]
 		self.RegionCode = dbRow["RegionCode"]
-		self.RegionLower = dbRow["RegionLower"]
+		self.RegionChat = dbRow["RegionChat"]
