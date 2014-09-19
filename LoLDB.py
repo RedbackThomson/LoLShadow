@@ -62,15 +62,15 @@ class LoLDB:
 
 	def SetOnlineUsers(self, onlineUsers, shadow):
 		cursor = self.getCursor()
-		cursor.execute("INSERT INTO `statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,%s) ON DUPLICATE KEY UPDATE `OnlineUsers`=%s;" % (shadow, str(onlineUsers), str(onlineUsers)))
+		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,%s) ON DUPLICATE KEY UPDATE `OnlineUsers`=%s;" % (shadow, str(onlineUsers), str(onlineUsers)))
 
 	def IncrementUserFollowed(self, user):
 		cursor = self.getCursor()
-		cursor.execute("INSERT INTO `user_statistics`(`User`,`TotalSubscribed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalSubscribed`=`TotalSubscribed` + 1;" % (user))
+		cursor.execute("INSERT INTO `user_statistics`(`User`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed`=`TotalFollowed` + 1;" % (user))
 
 	def IncrementTotalFollowed(self, shadow):
 		cursor = self.getCursor()
-		cursor.execute("INSERT INTO `statistics`(`Shadow`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed` = `TotalFollowed` + 1", (shadow))
+		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed` = `TotalFollowed` + 1", (shadow))
 
 	def UpdateNotice(self, user_id, notice):
 		cursor = self.getCursor()
@@ -78,7 +78,7 @@ class LoLDB:
 
 	def ResetOnlineUsers(self, shadow):
 		cursor = self.conn.cursor()
-		cursor.execute("INSERT INTO `statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,0) ON DUPLICATE KEY UPDATE `OnlineUsers`=0;" % (shadow))
+		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,0) ON DUPLICATE KEY UPDATE `OnlineUsers`=0;" % (shadow))
 
 	def GetLatestNotice(self):
 		cursor = self.getCursor()
