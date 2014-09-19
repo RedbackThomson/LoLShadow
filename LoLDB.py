@@ -24,14 +24,14 @@ class LoLDB:
 
 	def GetShadowEnabled(self, shadow):
 		cursor = self.getCursor()
-		cursor.execute("SELECT `Enabled` FROM `shadows` WHERE `ID`=%s;", (shadow))
+		cursor.execute("SELECT `Enabled` FROM `shadows` WHERE `ID`=%s;", (shadow,))
 		results = cursor.fetchone()
 		if results == None: return False
 		return (results['Enabled'] == 1)
 
 	def GetShadowByID(self, shadow):
 		cursor = self.getCursor()
-		cursor.execute("SELECT * FROM `shadows` WHERE `ID`=%s;", (shadow))
+		cursor.execute("SELECT * FROM `shadows` WHERE `ID`=%s;", (shadow,))
 		return ShadowModel(cursor.fetchone())
 
 	def CheckUserReserved(self, summoner, shadow):
@@ -42,7 +42,7 @@ class LoLDB:
 
 	def GetSetting(self, key):
 		cursor = self.getCursor()
-		cursor.execute("SELECT * FROM `settings` WHERE `Key`=%s;", (key))
+		cursor.execute("SELECT * FROM `settings` WHERE `Key`=%s;", (key,))
 		return (cursor.fetchone())['Value']
 
 	def GetUserBySummonerId(self, summoner_id, shadow):
@@ -66,11 +66,11 @@ class LoLDB:
 
 	def IncrementUserFollowed(self, user):
 		cursor = self.getCursor()
-		cursor.execute("INSERT INTO `user_statistics`(`User`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed`=`TotalFollowed` + 1;" % (user))
+		cursor.execute("INSERT INTO `user_statistics`(`User`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed`=`TotalFollowed` + 1;" % (user,))
 
 	def IncrementTotalFollowed(self, shadow):
 		cursor = self.getCursor()
-		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed` = `TotalFollowed` + 1", (shadow))
+		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`TotalFollowed`) VALUES(%s,1) ON DUPLICATE KEY UPDATE `TotalFollowed` = `TotalFollowed` + 1", (shadow,))
 
 	def UpdateNotice(self, user_id, notice):
 		cursor = self.getCursor()
@@ -78,7 +78,7 @@ class LoLDB:
 
 	def ResetOnlineUsers(self, shadow):
 		cursor = self.conn.cursor()
-		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,0) ON DUPLICATE KEY UPDATE `OnlineUsers`=0;" % (shadow))
+		cursor.execute("INSERT INTO `shadow_statistics`(`Shadow`,`OnlineUsers`) VALUES(%s,0) ON DUPLICATE KEY UPDATE `OnlineUsers`=0;" % (shadow,))
 
 	def GetLatestNotice(self):
 		cursor = self.getCursor()
@@ -87,5 +87,5 @@ class LoLDB:
 
 	def GetShadowRegion(self, shadow):
 		cursor = self.getCursor()
-		cursor.execute("SELECT * FROM `regions` WHERE `ID`=(SELECT `Region` FROM `shadows` WHERE `ID`=%s);", (shadow))
+		cursor.execute("SELECT * FROM `regions` WHERE `ID`=(SELECT `Region` FROM `shadows` WHERE `ID`=%s);", (shadow,))
 		return RegionModel(cursor.fetchone())
