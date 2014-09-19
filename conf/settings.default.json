@@ -1,0 +1,16 @@
+{
+	"database": 
+	{
+		"host": "",
+		"user": "",
+		"pass": "",
+		"db": ""
+	},
+	"redis":
+	{
+		"host": "localhost",
+		"password": "",
+		"port": 6379,
+		"db": 0
+	}
+}

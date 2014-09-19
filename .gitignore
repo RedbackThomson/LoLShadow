@@ -4,6 +4,6 @@ Backup/
 LoLAlerter.log
 logs/*
 tmp_tracker.pid
-conf/*
-sleekxmpp/*
+conf/settings.json
+conf/settings.prod.json
 tmp_shadow.pid

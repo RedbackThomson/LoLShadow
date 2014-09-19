@@ -1,0 +1,7 @@
+To start bot:
+cd /var/python/LoLShadow
+nohup python run.py &
+
+To kill bot:
+ps aux | grep python
+kill {pid of run.py}
