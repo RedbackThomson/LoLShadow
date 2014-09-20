@@ -75,7 +75,7 @@ class LoLChat(ClientXMPP):
 			self.sendPresence(pto=presence['from'], ptype='subscribed')
 			self.sendPresence(pto=presence['from'], ptype='subscribe')
 			self.loldb.AddShadowFriend(requestor, self.shadow.model.ID)
-			self.SendMessage(requestor, "Summoner successfully added. Welcome to LoLAlerter!")
+			self.SendMessage(requestor, "Summoner successfully added. Welcome to LoLShadow!")
 		else:
 			self.sendPresence(pto=presence['from'], ptype='unsubscribed')
 			self.sendPresence(pto=presence['from'], ptype='unsubscribe')

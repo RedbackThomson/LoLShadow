@@ -1,7 +1,6 @@
 *.pyc
 
 Backup/
-LoLAlerter.log
 logs/*
 tmp_tracker.pid
 conf/settings.json
