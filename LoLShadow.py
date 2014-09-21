@@ -68,6 +68,7 @@ class LoLShadow:
 				if enabled and not shadow.alive:
 					shadow.Start()
 				elif not enabled and shadow.alive:
+					ShadowLogger.ShadowInfo('Shadow Disabled', shadow.model.SummonerName)
 					shadow.Stop()
 			time.sleep(5)
 
