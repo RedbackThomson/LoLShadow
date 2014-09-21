@@ -27,6 +27,7 @@ class LoLChat(ClientXMPP):
 		self.add_event_handler("presence_subscribe", self._presence_subscribe)
 		self.add_event_handler("presence_unsubscribe", self._presence_unsubscribe)
 		self.add_event_handler("disconnected", self._disconnected)
+		self.add_event_handler("failed_auth", self._failed_auth)
 
 	def Start(self):
 		address = (self._getChatAddress(), Constants.CHAT_ADDRESS_PORT)
@@ -89,6 +90,10 @@ class LoLChat(ClientXMPP):
 	def _disconnected(self):
 		if self.alive:
 			self.shadow.Restart()
+
+	def _failed_auth(self, error):
+		ShadowLogger.ShadowInfo('Failed to authenticate', self.shadow.model.SummonerName)
+		ShadowLogger.ShadowDebug(error, self.shadow.model.SummonerName)
 
 	def _getChatAddress(self):
 		chatCode = (self.loldb.GetShadowRegion(self.shadow.model.ID).RegionChat)
