@@ -12,7 +12,7 @@ class LoLChat(ClientXMPP):
 		self.INTERCONTINENT = self.loldb.GetSetting("LoLRedbackID")
 
 		#Create the XMPP connection
-		ClientXMPP.__init__(self, jid + '@' + Constants.CHAT_SERVER + '/xiff', 'AIR_' + password)
+		ClientXMPP.__init__(self, jid + '@' + Constants.CHAT_SERVER + '/lolshadow', 'AIR_' + password)
 
 		#Automatically add new friends?
 		self.auto_authorize = None
