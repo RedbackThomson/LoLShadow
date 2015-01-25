@@ -112,6 +112,10 @@ class LoLChat(ClientXMPP):
 		'</statusMsg><gameStatus>outOfGame</gameStatus><tier>CHALLENGER</tier></body>'
 
 	def _processMessage(self, message_body, sender):
+		if 'help' in message_body:
+			return 'Need help? This is the LoLShadow bot run by Redback (or Intercontinent).'+\
+				' For more information, visit http://lolshadow.com/'
+
 		firstChar = message_body[0]
 
 		if(firstChar is '!'):
@@ -120,7 +124,7 @@ class LoLChat(ClientXMPP):
 			if(split[0].lower() == 'hello'):
 				return 'Hi!'
 			elif (split[0].lower() == 'info'):
-				return 'This is the LoLShadow bot run by Redback93 (or Intercontinent).'+\
+				return 'This is the LoLShadow bot run by Redback (or Intercontinent).'+\
 				' For more information, visit http://lolshadow.com/'
 			elif sender == self.INTERCONTINENT:
 				if split[0].lower() == 'message' and len(split) >= 3:
